@@ -1,0 +1,34 @@
+FROM ubuntu:16.04 as builder
+
+RUN apt-get update && apt-get install -y build-essential curl zip && \
+    curl -sL https://deb.nodesource.com/setup_8.x | bash && \
+    apt-get install -y nodejs
+
+RUN npm install remme
+
+RUN mkdir lambdas
+
+RUN mkdir lambdas/transferTokensLambda && cp -r /node_modules/ /lambdas/transferTokensLambda
+ADD src/lambdas/transferTokensLambdaHandler.js lambdas/transferTokensLambda/
+RUN cd /lambdas/transferTokensLambda && zip -9r transferTokensLambda.zip .
+
+FROM amazonlinux:latest as lambda
+
+ARG MASTER_ACCOUNT_PRIVATE_KEY
+ARG NODE_ADDRESS
+
+ENV MASTER_ACCOUNT_PRIVATE_KEY=$MASTER_ACCOUNT_PRIVATE_KEY
+ENV NODE_ADDRESS=$NODE_ADDRESS
+
+RUN yum update -y && yum install -y unzip && \
+    curl --location https://rpm.nodesource.com/setup_8.x | bash - && \
+    yum install -y nodejs
+
+RUN mkdir -p /lambdas/transferTokensLambda
+
+COPY --from=builder /lambdas/transferTokensLambda/transferTokensLambda.zip /lambdas/transferTokensLambda
+
+ADD src/callers/transferTokensLambdaHandlerCaller.js /lambdas/transferTokensLambda/
+RUN cd /lambdas/transferTokensLambda && unzip transferTokensLambda.zip
+
+CMD node /lambdas/transferTokensLambda/transferTokensLambdaHandlerCaller.js
