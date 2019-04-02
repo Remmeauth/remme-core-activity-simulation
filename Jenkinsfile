@@ -2,7 +2,8 @@ node('master') {
 
     stage ('Clone source code. Checkout') {
         sh "rm -rf * || true && rm -rf  .* || true"
-        if (env.BRANCH_NAME == 'develop' || nv.BRANCH_NAME == 'master') {
+
+        if (env.BRANCH_NAME == 'develop' || env.BRANCH_NAME == 'master') {
             sh "git clone -b ${env.BRANCH_NAME} https://github.com/Remmeauth/remme-core-activity-simulation ."
         } else {
             sh "git clone -b ${env.CHANGE_BRANCH} https://github.com/Remmeauth/remme-core-activity-simulation ."

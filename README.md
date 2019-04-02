@@ -74,4 +74,3 @@ $ docker run \
       -v $PWD/src/lambdas/transferTokensLambdaHandler.js:/lambdas/transferTokensLambda/transferTokensLambdaHandler.js \
       --name transfer-tokens-lambda --rm transfer-tokens-lambda
 ```
-
