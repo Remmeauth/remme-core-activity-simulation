@@ -21,11 +21,13 @@ To build an environment for lambdas and bundle each to own ``zip-archive``, buil
 $ docker build -t lambdas . -f ops/Dockerfile.buildLambdasToProduction
 ```
 
-Afterwards, export ``zip-archives`` from container to host with the following commands:
+Afterwards, run the container, export ``zip-archives`` from container to host and stop the container with the following 
+commands:
 
 ```bash
-$ ID=$(docker create lambdas /bin/true)
-$ docker cp $ID:/lambdas/transferTokensLambda/transferTokensLambda.zip .
+$ docker run -d --name lambdas lambdas
+$ docker cp lambdas:/lambdas/transferTokensLambda/transferTokensLambda.zip .
+$ docker stop lambdas
 ```
 
 Now you can upload it to the ``AWS Lambda`` service and test with the following command:
