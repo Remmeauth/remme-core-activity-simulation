@@ -1,8 +1,6 @@
-FROM ubuntu:16.04 as builder
+FROM node:8
 
-RUN apt-get update && apt-get install -y build-essential curl zip && \
-    curl -sL https://deb.nodesource.com/setup_8.x | bash && \
-    apt-get install -y nodejs
+RUN apt-get update && apt-get install -y zip
 
 RUN npm install remme
 
@@ -13,3 +11,5 @@ RUN mkdir /lambdas/transferTokensLambda && cp -r /node_modules/ /lambdas/transfe
 ADD src/lambdas/transferTokensLambdaHandler.js /lambdas/transferTokensLambda/
 
 RUN cd /lambdas/transferTokensLambda && zip -9r transferTokensLambda.zip .
+
+CMD sleep 7200
