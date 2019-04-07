@@ -27,6 +27,7 @@ commands:
 ```bash
 $ docker run -d --name lambdas lambdas
 $ docker cp lambdas:/lambdas/transferTokensLambda/transferTokensLambda.zip .
+$ docker cp lambdas:/lambdas/storePublicKeyLambda/storePublicKeyLambda.zip .
 $ docker stop lambdas
 ```
 
@@ -73,4 +74,26 @@ $ docker run \
       -v $PWD/src/callers/transferTokensLambdaHandlerCaller.js:/lambdas/transferTokensLambda/transferTokensLambdaHandlerCaller.js \
       -v $PWD/src/lambdas/transferTokensLambdaHandler.js:/lambdas/transferTokensLambda/transferTokensLambdaHandler.js \
       --name transfer-tokens-lambda --rm transfer-tokens-lambda
+```
+
+### Store public key lambda
+
+To build an environment for lambda that transfer tokens, build the container first:
+
+```bash
+$ docker build  \
+      --build-arg MASTER_ACCOUNT_PRIVATE_KEY=ad2dc65ca66706aa4b5a2b63a10472c91e113b7f82614260f3bb3a2cd28a0cdc \
+      --build-arg NODE_ADDRESS=139.59.148.55 \
+      -f Dockerfile.storePublicKeyLambda \
+      -t store-public-key-lambda .
+```
+
+Then you could execute the lambda like it should be executed in the production with the following command. This command
+execute lambda in the container, that container is destroyed, so you can do it again immediately.
+
+```bash
+$ docker run \
+      -v $PWD/src/callers/storePublicKeyLambdaHandlerCaller.js:/lambdas/storePublicKeyLambda/storePublicKeyLambdaHandlerCaller.js \
+      -v $PWD/src/lambdas/storePublicKeyLambdaHandler.js:/lambdas/storePublicKeyLambda/storePublicKeyLambdaHandler.js \
+      --name store-public-key-lambda --rm store-public-key-lambda
 ```

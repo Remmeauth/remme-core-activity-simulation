@@ -7,9 +7,12 @@ RUN npm install remme
 RUN mkdir /lambdas
 
 RUN mkdir /lambdas/transferTokensLambda && cp -r /node_modules/ /lambdas/transferTokensLambda
+RUN mkdir /lambdas/storePublicKeyLambda && cp -r /node_modules/ /lambdas/storePublicKeyLambda
 
 ADD src/lambdas/transferTokensLambdaHandler.js /lambdas/transferTokensLambda/
+ADD src/lambdas/storePublicKeyLambdaHandler.js /lambdas/storePublicKeyLambda/
 
 RUN cd /lambdas/transferTokensLambda && zip -9r transferTokensLambda.zip .
+RUN cd /lambdas/storePublicKeyLambda && zip -9r storePublicKeyLambda.zip .
 
 CMD sleep 7200
