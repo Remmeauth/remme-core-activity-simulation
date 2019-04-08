@@ -1,0 +1,32 @@
+FROM node:8 as builder
+
+RUN apt-get update && apt-get install -y zip
+
+RUN npm install remme
+
+RUN mkdir lambdas
+
+RUN mkdir lambdas/revokePublicKeyLambda && cp -r /node_modules/ /lambdas/revokePublicKeyLambda
+ADD src/lambdas/revokePublicKeyLambdaHandler.js lambdas/revokePublicKeyLambda/
+RUN cd /lambdas/revokePublicKeyLambda && zip -9r revokePublicKeyLambda.zip .
+
+FROM amazonlinux:latest as lambda
+
+ARG MASTER_ACCOUNT_PRIVATE_KEY
+ARG NODE_ADDRESS
+
+ENV MASTER_ACCOUNT_PRIVATE_KEY=$MASTER_ACCOUNT_PRIVATE_KEY
+ENV NODE_ADDRESS=$NODE_ADDRESS
+
+RUN yum update -y && yum install -y unzip && \
+    curl --location https://rpm.nodesource.com/setup_8.x | bash - && \
+    yum install -y nodejs
+
+RUN mkdir -p /lambdas/revokePublicKeyLambda
+
+COPY --from=builder /lambdas/revokePublicKeyLambda/revokePublicKeyLambda.zip /lambdas/revokePublicKeyLambda
+
+ADD src/callers/revokePublicKeyLambdaHandlerCaller.js /lambdas/revokePublicKeyLambda/
+RUN cd /lambdas/revokePublicKeyLambda && unzip revokePublicKeyLambda.zip
+
+CMD node /lambdas/revokePublicKeyLambda/revokePublicKeyLambdaHandlerCaller.js

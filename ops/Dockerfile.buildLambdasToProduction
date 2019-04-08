@@ -8,11 +8,14 @@ RUN mkdir /lambdas
 
 RUN mkdir /lambdas/transferTokensLambda && cp -r /node_modules/ /lambdas/transferTokensLambda
 RUN mkdir /lambdas/storePublicKeyLambda && cp -r /node_modules/ /lambdas/storePublicKeyLambda
+RUN mkdir /lambdas/revokePublicKeyLambda && cp -r /node_modules/ /lambdas/revokePublicKeyLambda
 
 ADD src/lambdas/transferTokensLambdaHandler.js /lambdas/transferTokensLambda/
 ADD src/lambdas/storePublicKeyLambdaHandler.js /lambdas/storePublicKeyLambda/
+ADD src/lambdas/revokePublicKeyLambdaHandler.js /lambdas/revokePublicKeyLambda/
 
 RUN cd /lambdas/transferTokensLambda && zip -9r transferTokensLambda.zip .
 RUN cd /lambdas/storePublicKeyLambda && zip -9r storePublicKeyLambda.zip .
+RUN cd /lambdas/revokePublicKeyLambda && zip -9r revokePublicKeyLambda.zip .
 
 CMD sleep 7200
