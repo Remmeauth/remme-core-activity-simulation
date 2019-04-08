@@ -1,0 +1,32 @@
+FROM node:8 as builder
+
+RUN apt-get update && apt-get install -y zip
+
+RUN npm install remme
+
+RUN mkdir lambdas
+
+RUN mkdir lambdas/storePublicKeyLambda && cp -r /node_modules/ /lambdas/storePublicKeyLambda
+ADD src/lambdas/storePublicKeyLambdaHandler.js lambdas/storePublicKeyLambda/
+RUN cd /lambdas/storePublicKeyLambda && zip -9r storePublicKeyLambda.zip .
+
+FROM amazonlinux:latest as lambda
+
+ARG MASTER_ACCOUNT_PRIVATE_KEY
+ARG NODE_ADDRESS
+
+ENV MASTER_ACCOUNT_PRIVATE_KEY=$MASTER_ACCOUNT_PRIVATE_KEY
+ENV NODE_ADDRESS=$NODE_ADDRESS
+
+RUN yum update -y && yum install -y unzip && \
+    curl --location https://rpm.nodesource.com/setup_8.x | bash - && \
+    yum install -y nodejs
+
+RUN mkdir -p /lambdas/storePublicKeyLambda
+
+COPY --from=builder /lambdas/storePublicKeyLambda/storePublicKeyLambda.zip /lambdas/storePublicKeyLambda
+
+ADD src/callers/storePublicKeyLambdaHandlerCaller.js /lambdas/storePublicKeyLambda/
+RUN cd /lambdas/storePublicKeyLambda && unzip storePublicKeyLambda.zip
+
+CMD node /lambdas/storePublicKeyLambda/storePublicKeyLambdaHandlerCaller.js
