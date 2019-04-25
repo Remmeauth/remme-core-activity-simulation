@@ -42,9 +42,10 @@ $ aws lambda update-function-code --function-name activitySimulationTrasferToken
 
 The production requires the following environment variables on the ``AWS Lambda`` environment:
 
-1. ``NODE_ADDRESS`` — the address of the node to work with (e.g. ``node-genesis-testnet.remme.io`` or ``139.59.148.55``).
+1. ``NODE_ADDRESS`` — the address of the node to work with (e.g. ``node-27-testnet.remme.io`` or ``139.59.148.55``).
 2. ``MASTER_ACCOUNT_PRIVATE_KEY`` — private key from the account on the blockchain that is accessible by the node address 
 that could be a faucet for the transactions execution (have tokens on the account).
+3. ``AMOUNT_OF_TOKENS_TO_SEND`` — amount of tokens to send for transfer tokens lambda.
 
 ## Development
 
@@ -62,7 +63,8 @@ To build an environment for lambda that transfer tokens, build the container fir
 ```bash
 $ docker build  \
       --build-arg MASTER_ACCOUNT_PRIVATE_KEY=ad2dc65ca66706aa4b5a2b63a10472c91e113b7f82614260f3bb3a2cd28a0cdc \
-      --build-arg NODE_ADDRESS=139.59.148.55 \
+      --build-arg NODE_ADDRESS=node-27-testnet.remme.io \
+      --build-arg AMOUNT_OF_TOKENS_TO_SEND=1000 \
       -f Dockerfile.transferTokensLambda \
       -t transfer-tokens-lambda .
 ```
@@ -84,7 +86,7 @@ To build an environment for lambda that store public key, build the container fi
 ```bash
 $ docker build  \
       --build-arg MASTER_ACCOUNT_PRIVATE_KEY=ad2dc65ca66706aa4b5a2b63a10472c91e113b7f82614260f3bb3a2cd28a0cdc \
-      --build-arg NODE_ADDRESS=139.59.148.55 \
+      --build-arg NODE_ADDRESS=node-27-testnet.remme.io \
       -f Dockerfile.storePublicKeyLambda \
       -t store-public-key-lambda .
 ```
@@ -106,7 +108,7 @@ To build an environment for lambda that revoke public key, build the container f
 ```bash
 $ docker build  \
       --build-arg MASTER_ACCOUNT_PRIVATE_KEY=ad2dc65ca66706aa4b5a2b63a10472c91e113b7f82614260f3bb3a2cd28a0cdc \
-      --build-arg NODE_ADDRESS=139.59.148.55 \
+      --build-arg NODE_ADDRESS=node-27-testnet.remme.io \
       -f Dockerfile.revokePublicKeyLambda \
       -t revoke-public-key-lambda .
 ```

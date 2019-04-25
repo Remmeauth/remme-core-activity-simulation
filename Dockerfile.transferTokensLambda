@@ -14,9 +14,11 @@ FROM amazonlinux:latest as lambda
 
 ARG MASTER_ACCOUNT_PRIVATE_KEY
 ARG NODE_ADDRESS
+ARG AMOUNT_OF_TOKENS_TO_SEND
 
 ENV MASTER_ACCOUNT_PRIVATE_KEY=$MASTER_ACCOUNT_PRIVATE_KEY
 ENV NODE_ADDRESS=$NODE_ADDRESS
+ENV AMOUNT_OF_TOKENS_TO_SEND=$AMOUNT_OF_TOKENS_TO_SEND
 
 RUN yum update -y && yum install -y unzip && \
     curl --location https://rpm.nodesource.com/setup_8.x | bash - && \
