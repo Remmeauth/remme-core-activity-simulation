@@ -73,7 +73,7 @@ node('master') {
                     --runtime 'nodejs8.10' \
                     --handler 'transferTokensLambdaHandler.transferTokensLambdaHandler' \
                     --role 'arn:aws:iam::146998029420:role/HandleLambdasRole' \
-                    --environment Variables='{MASTER_ACCOUNT_PRIVATE_KEY=${env.MASTER_ACCOUNT_PRIVATE_KEY},NODE_ADDRESS=${env.NODE_ADDRESS}}' \
+                    --environment Variables='{MASTER_ACCOUNT_PRIVATE_KEY=${env.MASTER_ACCOUNT_PRIVATE_KEY},NODE_ADDRESS=${env.NODE_ADDRESS},AMOUNT_OF_TOKENS_TO_SEND=${env.AMOUNT_OF_TOKENS_TO_SEND}}' \
                     --zip-file fileb://transferTokensLambda.zip"
 
             sh "aws lambda create-function \
