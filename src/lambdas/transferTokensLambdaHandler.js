@@ -17,14 +17,15 @@ const remme_from_address = remme_from.token._remmeAccount._address;
 exports.transferTokensLambdaHandler = async (event) => {
 
     const remme_to = new Remme.Client({
+        accountConfig: { privateKeyHex, type: 1 },
         networkConfig: {
             nodeAddress: nodeAddress + ":8080"
         }
     });
 
-    const remme_to_address = remme_to.token._remmeAccount._address;
+    const remme_to_address = remme_to.account.address;
 
-    const transactionResult = await remme_from.token.transfer(remme_to.token._remmeAccount._address, amountOfTokensToSend);
+    const transactionResult = await remme_from.token.transfer(remme_to_address, amountOfTokensToSend);
     const batchIdentifier = transactionResult.data.id;
 
     console.log(
